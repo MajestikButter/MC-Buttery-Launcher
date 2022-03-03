@@ -133,22 +133,6 @@ namespace MC_Buttery_Launcher
                 else PreviewProfiles.Add(profile);
             }
         }
-
-        private async void PreviewLaunchClick(object sender, RoutedEventArgs e)
-        {
-            var pkg = await AppDiagnosticInfo.RequestInfoForPackageAsync(PreviewPackageName);
-            if (pkg.Count <= 0) return;
-            await pkg[0].LaunchAsync();
-            if (!Settings.keepOpen) Application.Current.Shutdown();
-        }
-
-        private async void ReleaseLaunchClick(object sender, RoutedEventArgs e)
-        {
-            var pkg = await AppDiagnosticInfo.RequestInfoForPackageAsync(ReleasePackageName);
-            if (pkg.Count <= 0) return;
-            await pkg[0].LaunchAsync();
-            if (!Settings.keepOpen) Application.Current.Shutdown();
-        }
         private static bool IsSymbolic(string path)
         {
             return DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(path));
@@ -240,6 +224,28 @@ namespace MC_Buttery_Launcher
         }
 
         // Event Handlers
+
+        private async void ReleaseLaunchClick(object sender, RoutedEventArgs e)
+        {
+            Profile profile = (Profile)ReleaseProfileList.SelectedItem;
+            SetReleaseProfile(profile);
+
+            var pkg = await AppDiagnosticInfo.RequestInfoForPackageAsync(ReleasePackageName);
+            if (pkg.Count <= 0) return;
+            await pkg[0].LaunchAsync();
+            if (!Settings.keepOpen) Application.Current.Shutdown();
+        }
+
+        private async void PreviewLaunchClick(object sender, RoutedEventArgs e)
+        {
+            Profile profile = (Profile)PreviewProfileList.SelectedItem;
+            SetPreviewProfile(profile);
+
+            var pkg = await AppDiagnosticInfo.RequestInfoForPackageAsync(PreviewPackageName);
+            if (pkg.Count <= 0) return;
+            await pkg[0].LaunchAsync();
+            if (!Settings.keepOpen) Application.Current.Shutdown();
+        }
 
         private void ReleaseProfileClick(object sender, RoutedEventArgs e)
         {

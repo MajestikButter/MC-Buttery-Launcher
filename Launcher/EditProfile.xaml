@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Edit Profile - Minecraft Launcher" Height="150" Width="300" KeyDown="WindowKeyDown">
+        Title="Edit Profile - MC Buttery Launcher" Height="150" Width="300" KeyDown="WindowKeyDown">
     <DockPanel Margin="10">
         <Grid DockPanel.Dock="Top" HorizontalAlignment="Left" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
