@@ -1,0 +1,83 @@
+﻿<Window x:Class="MC_Buttery_Launcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Minecraft Launcher" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Content="Release Profile" FontSize="24" Grid.Column="0"/>
+        <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Column="0" Grid.Row="1" x:Name="ReleaseProfileList" SelectedIndex="0" SelectionChanged="ReleaseProfileList_SelectionChanged">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Label Content="{Binding name}" FontSize="16"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Grid Grid.Column="0" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Content="New Profile" FontSize="20" Click="NewReleaseProfileClick"/>
+            <Button Content="Edit Profile" FontSize="20" Grid.Column="1" Click="ReleaseEditClick"/>
+            <Button Content="Delete Profile" FontSize="20" Grid.Column="2" Click="ReleaseRemoveClick"/>
+        </Grid>
+
+        <Grid Grid.Column="0" Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Content="Select Profile" FontSize="20" Grid.Column="0" Click="ReleaseProfileClick"/>
+            <Button Content="Launch Release" FontSize="20" Grid.Column="1" Click="ReleaseLaunchClick"/>
+        </Grid>
+
+        <Label Content="Preview Profile" FontSize="24" Grid.Column="1"/>
+        <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Column="1" Grid.Row="1" x:Name="PreviewProfileList" SelectedIndex="0" SelectionChanged="PreviewProfileList_SelectionChanged">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Label Content="{Binding name}" FontSize="16"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        
+        <Grid Grid.Column="1" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Button Content="New Profile" FontSize="20" Click="NewPreviewProfileClick"/>
+            <Button Content="Edit Profile" FontSize="20" Grid.Column="1" Click="PreviewEditClick"/>
+            <Button Content="Delete Profile" FontSize="20" Grid.Column="2" Click="PreviewRemoveClick"/>
+        </Grid>
+
+        <Grid Grid.Column="1" Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Button Content="Select Profile" FontSize="20" Grid.Column="0" Click="PreviewProfileClick"/>
+            <Button Content="Launch Preview" FontSize="20" Grid.Column="1" Click="PreviewLaunchClick"/>
+        </Grid>
+    </Grid>
+</Window>

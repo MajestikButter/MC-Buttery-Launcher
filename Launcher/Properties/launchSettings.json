@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MC_Buttery_Launcher": {
+      "commandName": "Project",
+      "remoteDebugEnabled": false
+    }
+  }
+}
