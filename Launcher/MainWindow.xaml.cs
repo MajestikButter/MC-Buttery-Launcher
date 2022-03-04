@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -167,6 +168,8 @@ namespace MC_Buttery_Launcher
             DirectoryInfo fromInfo = new(fromPath);
             DirectoryInfo toInfo = new(toPath);
 
+            string[] pathSplit = fromPath.Split("/".ToCharArray()[0]);
+            string folderPath = string.Join("/", pathSplit.Take(pathSplit.Length - 1));
             if (Directory.Exists(fromPath))
             {
                 if (!IsSymbolic(fromPath))
@@ -178,7 +181,11 @@ namespace MC_Buttery_Launcher
                     Directory.Delete(fromPath, false);
                 };
             }
-
+            else if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+            
             DirectoryInfoExtensions.CreateSymbolicLink(toInfo, fromPath);
 
             FileSystemAccessRule accessRule = new(
