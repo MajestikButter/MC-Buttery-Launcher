@@ -32,21 +32,33 @@ namespace MC_Buttery_Launcher
         public static readonly string PreviewPackageName = "Microsoft.MinecraftWindowsBeta_8wekyb3d8bbwe";
         public static readonly SecurityIdentifier ReleaseSecurityId = new("S-1-15-2-1958404141-86561845-1752920682-3514627264-368642714-62675701-733520436");
         public static readonly SecurityIdentifier PreviewSecurityId = new("S-1-15-3-424268864-5579737-879501358-346833251-474568803-887069379-4040235476");
+        public static readonly Dictionary<string, WindowSize> DefaultWindowSizes = new()
+        {
+            { "MainWindow", new WindowSize(440, 820) },
+            { "SettingsWindow", new WindowSize(80, 375) },
+            { "EditProfile", new WindowSize(225, 690) }
+        };
 
         readonly List<Profile> PreviewProfiles = new();
         readonly List<Profile> ReleaseProfiles = new();
 
-        readonly Settings Settings;
+        public readonly Settings Settings;
 
         public MainWindow()
         {
             InitializeComponent();
 
             VerifyPaths();
+            FetchProfiles();
 
-            VerifySettings();
+            VerifySettingsFile();
             string settingsStr = File.ReadAllText("./data/settings.json");
             Settings = JsonConvert.DeserializeObject<Settings>(settingsStr)!;
+            VerifySettings();
+
+            WindowSize size = Settings.windowSizes["MainWindow"];
+            Height = size.height;
+            Width = size.width;
 
             RefreshProfiles();
             SetupProfileLists();
@@ -68,11 +80,54 @@ namespace MC_Buttery_Launcher
             return true;
         }
 
-        private static void VerifySettings()
+        private static void VerifySettingsFile()
         {
             if (!File.Exists("./data/settings.json"))
             {
-                File.WriteAllText("./data/settings.json", JsonConvert.SerializeObject(new Settings("", "", false), Formatting.Indented));
+                Dictionary<string, WindowSize> windowSizes = new();
+                foreach (var windowSize in DefaultWindowSizes)
+                {
+                    windowSizes.Add(windowSize.Key, windowSize.Value.Clone());
+                }
+                File.WriteAllText("./data/settings.json", JsonConvert.SerializeObject(new Settings(null, null, false, windowSizes)));
+            }
+        }
+        private void VerifySettings()
+        {
+            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            if (Settings.keepOpen == null) Settings.keepOpen = true;
+            if (Settings.selectedPreview == null || PreviewProfiles.FindIndex((v) => v.uuid == Settings.selectedPreview) < 0)
+            {
+                Settings.selectedPreview = PreviewProfiles[0].uuid;
+            }
+            if (Settings.selectedRelease == null || ReleaseProfiles.FindIndex((v) => v.uuid == Settings.selectedRelease) < 0)
+            {
+                Settings.selectedRelease = ReleaseProfiles[0].uuid;
+            }
+            if (Settings.windowSizes == null)
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            {
+                Dictionary<string, WindowSize> windowSizes = new();
+                foreach (var windowSize in DefaultWindowSizes)
+                {
+                    windowSizes.Add(windowSize.Key, windowSize.Value.Clone());
+                }
+                Settings.windowSizes = windowSizes;
+            }
+        }
+
+        private int GetSelectedProfileIndex(bool isRelease) {
+            if (isRelease)
+            {
+                int index = ReleaseProfiles.FindIndex((v) => v.uuid == Settings.selectedRelease);
+                if (index < 0) return 0;
+                return index;
+            }
+            else
+            {
+                int index = PreviewProfiles.FindIndex((v) => v.uuid == Settings.selectedPreview);
+                if (index < 0) return 0;
+                return index;
             }
         }
 
@@ -90,9 +145,9 @@ namespace MC_Buttery_Launcher
         {
             FetchProfiles();
             ReleaseProfileList.Items.Refresh();
-            ReleaseProfileList.SelectedIndex = ReleaseProfiles.FindIndex(p => p.uuid == Settings.selectedRelease);
+            ReleaseProfileList.SelectedIndex = GetSelectedProfileIndex(true);
             PreviewProfileList.Items.Refresh();
-            PreviewProfileList.SelectedIndex = PreviewProfiles.FindIndex(p => p.uuid == Settings.selectedPreview);
+            PreviewProfileList.SelectedIndex = GetSelectedProfileIndex(false);
         }
 
         private void SetupProfileLists()
@@ -106,12 +161,11 @@ namespace MC_Buttery_Launcher
 
         private void FetchProfiles()
         {
+            Profile releaseProfile = new(true, "Default Release", DefaultReleaseProfilePath);
+            Profile previewProfile = new(false, "Default Preview", DefaultPreviewProfilePath);
             if (!File.Exists("./data/profiles.json"))
             {
                 List<Profile> profiles = new();
-
-                Profile releaseProfile = new(true, "Default Release", DefaultReleaseProfilePath);
-                Profile previewProfile = new(false, "Default Preview", DefaultPreviewProfilePath);
 
                 SetReleaseProfile(releaseProfile);
                 SetPreviewProfile(previewProfile);
@@ -132,6 +186,16 @@ namespace MC_Buttery_Launcher
                 profile.path = profile.path.Replace(@"\\", "/");
                 if (profile.isRelease) ReleaseProfiles.Add(profile);
                 else PreviewProfiles.Add(profile);
+            }
+            if (ReleaseProfiles.Count <= 0)
+            {
+                ReleaseProfiles.Add(releaseProfile);
+                releaseProfile.Save();
+            }
+            if (PreviewProfiles.Count <= 0)
+            {
+                PreviewProfiles.Add(previewProfile);
+                previewProfile.Save();
             }
         }
         private static bool IsSymbolic(string path)
@@ -313,6 +377,23 @@ namespace MC_Buttery_Launcher
         private void PreviewProfileList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (PreviewProfileList.SelectedIndex < 0) PreviewProfiles.FindIndex(p => p.uuid == Settings.selectedPreview);
+        }
+
+        private void SettingsUI()
+        {
+            new SettingsWindow(Settings, this).ShowDialog();
+        }
+        private void SettingsClick(object sender, RoutedEventArgs e)
+        {
+            SettingsUI();
+        }
+
+        private void OnClose(object? sender, EventArgs e)
+        {
+            Debug.WriteLine("Closing MainWindow");
+            Settings.windowSizes["MainWindow"] = new WindowSize(Height, Width);
+
+            Settings.Save();
         }
     }
 }

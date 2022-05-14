@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Edit Profile - MC Buttery Launcher" Height="150" Width="300" KeyDown="WindowKeyDown">
+        Title="Edit Profile - MC Buttery Launcher" Height="150" Width="300" KeyDown="WindowKeyDown"
+        Closed="OnClose" MinWidth="300" MinHeight="150">
     <DockPanel Margin="10">
         <Grid DockPanel.Dock="Top" HorizontalAlignment="Left" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
@@ -15,11 +16,11 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <Label Content="Name" Grid.Row="0" Grid.Column="0"/>
-            <TextBox x:Name="NameTextBox" TextWrapping="Wrap" Text="New Profile" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <TextBox x:Name="NameTextBox" TextWrapping="Wrap" Text="New Profile" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" MinWidth="100"/>
             <Label Content="Path" Grid.Row="1" Grid.Column="0"/>
             <Grid Grid.Row="1" Grid.Column="1">
                 <Grid.ColumnDefinitions>
@@ -27,9 +28,11 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBox x:Name="PathTextBox" TextWrapping="Wrap" Text="C:\Example\Path" Height="18"/>
+                <TextBox x:Name="PathTextBox" TextWrapping="Wrap" Height="18"/>
                 <Button Grid.Column="1" Content="..." Width="20" Height="18" FontWeight="Bold" Click="PathClick"/>
             </Grid>
+            <Label Content="Subfolders" Grid.Row="2" Grid.Column="0"/>
+            <TextBox x:Name="SubfoldersTextBox" TextWrapping="Wrap" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" AcceptsReturn="True" MinWidth="200"/>
         </Grid>
         <Button Content="Confirm Changes" Click="ConfirmClick" DockPanel.Dock="Bottom" Width="100" Height="20" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
     </DockPanel>

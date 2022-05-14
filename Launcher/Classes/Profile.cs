@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace MC_Buttery_Launcher
 {
     public class Profile
     {
         public bool isRelease;
-#pragma warning disable IDE1006 // Naming Styles
+        #pragma warning disable IDE1006 // Naming Styles
         public string name { get; set; }
-#pragma warning restore IDE1006 // Naming Styles
+        #pragma warning restore IDE1006 // Naming Styles
         public string path;
         public string uuid;
         public Dictionary<string, string> subfolders;
@@ -26,6 +27,9 @@ namespace MC_Buttery_Launcher
 
         public void Save()
         {
+            Debug.WriteLine("Saving profile");
+            Debug.WriteLine(JsonConvert.SerializeObject(this));
+
             string profileStr = File.ReadAllText("./data/profiles.json");
             List<Profile> profiles = JsonConvert.DeserializeObject<List<Profile>>(profileStr)!;
             Profile? profile = profiles.Find(profile => profile.uuid == uuid);
@@ -37,6 +41,7 @@ namespace MC_Buttery_Launcher
             {
                 profile.name = name;
                 profile.path = path;
+                profile.subfolders = subfolders;
             }
             File.WriteAllText("./data/profiles.json", JsonConvert.SerializeObject(profiles, Formatting.Indented));
         }

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Ookii.Dialogs.Wpf;
+using System.Diagnostics;
 
 namespace MC_Buttery_Launcher
 {
@@ -29,6 +30,31 @@ namespace MC_Buttery_Launcher
             this.MainWindow = MainWindow;
             NameTextBox.Text = Profile.name;
             PathTextBox.Text = Profile.path;
+            SubfoldersTextBox.Text = SubfoldersToString();
+
+            WindowSize size = MainWindow.Settings.windowSizes["EditProfile"];
+            Height = size.height;
+            Width = size.width;
+        }
+
+        private string SubfoldersToString()
+        {
+            return string.Join("\n", Profile.subfolders.Select(x => x.Key + " = " + x.Value));
+        }
+
+        private Dictionary<string, string> SubfoldersFromString()
+        {
+            string[] definitions = SubfoldersTextBox.Text.Split('\n');
+            Dictionary<string, string> subfolders = new();
+            foreach (string definition in definitions)
+            {
+                string[] keyValuePair = definition.Trim().Split("=");
+                if (keyValuePair.Length == 2)
+                {
+                    subfolders.Add(keyValuePair[0].Trim(), keyValuePair[1].Trim());
+                }
+            }
+            return subfolders;
         }
 
         private void Confirm()
@@ -36,6 +62,7 @@ namespace MC_Buttery_Launcher
 
             Profile.name = NameTextBox.Text;
             Profile.path = PathTextBox.Text;
+            Profile.subfolders = SubfoldersFromString();
 
             Profile.Save();
             MainWindow.RefreshProfiles();
@@ -63,6 +90,12 @@ namespace MC_Buttery_Launcher
             {
                 Confirm();
             }
+        }
+
+        private void OnClose(object? sender, EventArgs e)
+        {
+            Debug.WriteLine("Closing EditProfile");
+            MainWindow.Settings.windowSizes["EditProfile"] = new WindowSize(Height, Width);
         }
     }
 }
