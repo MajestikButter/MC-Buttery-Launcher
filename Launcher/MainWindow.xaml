@@ -34,7 +34,7 @@
             </Grid.ColumnDefinitions>
 
             <Label Content="Release Profile" FontSize="24" Grid.Column="0"/>
-            <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Column="0" Grid.Row="1" x:Name="ReleaseProfileList" SelectedIndex="0" SelectionChanged="ReleaseProfileList_SelectionChanged">
+            <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Column="0" Grid.Row="1" x:Name="ReleaseProfileList" SelectedIndex="0" SelectionChanged="ReleaseProfileList_SelectionChanged" MouseDoubleClick="ReleaseProfileList_MouseDoubleClick">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Label Content="{Binding name}" FontSize="16"/>
@@ -65,7 +65,7 @@
             </Grid>
 
             <Label Content="Preview Profile" FontSize="24" Grid.Column="1"/>
-            <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Column="1" Grid.Row="1" x:Name="PreviewProfileList" SelectedIndex="0" SelectionChanged="PreviewProfileList_SelectionChanged">
+            <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Column="1" Grid.Row="1" x:Name="PreviewProfileList" SelectedIndex="0" SelectionChanged="PreviewProfileList_SelectionChanged" MouseDoubleClick="PreviewProfileList_MouseDoubleClick">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Label Content="{Binding name}" FontSize="16"/>

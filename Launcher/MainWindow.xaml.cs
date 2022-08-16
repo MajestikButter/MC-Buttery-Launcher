@@ -96,6 +96,8 @@ namespace MC_Buttery_Launcher
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             if (Settings.keepOpen == null) Settings.keepOpen = true;
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
             if (Settings.selectedPreview == null || PreviewProfiles.FindIndex((v) => v.uuid == Settings.selectedPreview) < 0)
             {
                 Settings.selectedPreview = PreviewProfiles[0].uuid;
@@ -105,7 +107,6 @@ namespace MC_Buttery_Launcher
                 Settings.selectedRelease = ReleaseProfiles[0].uuid;
             }
             if (Settings.windowSizes == null)
-            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             {
                 Dictionary<string, WindowSize> windowSizes = new();
                 foreach (var windowSize in DefaultWindowSizes)
@@ -296,7 +297,7 @@ namespace MC_Buttery_Launcher
 
         // Event Handlers
 
-        private async void ReleaseLaunchClick(object sender, RoutedEventArgs e)
+        private async void LaunchRelease()
         {
             Profile profile = (Profile)ReleaseProfileList.SelectedItem;
             SetReleaseProfile(profile);
@@ -306,8 +307,12 @@ namespace MC_Buttery_Launcher
             await pkg[0].LaunchAsync();
             if (!Settings.keepOpen) Application.Current.Shutdown();
         }
+        private void ReleaseLaunchClick(object sender, RoutedEventArgs e)
+        {
+            LaunchRelease();
+        }
 
-        private async void PreviewLaunchClick(object sender, RoutedEventArgs e)
+        private async void LaunchPreview()
         {
             Profile profile = (Profile)PreviewProfileList.SelectedItem;
             SetPreviewProfile(profile);
@@ -316,6 +321,10 @@ namespace MC_Buttery_Launcher
             if (pkg.Count <= 0) return;
             await pkg[0].LaunchAsync();
             if (!Settings.keepOpen) Application.Current.Shutdown();
+        }
+        private void PreviewLaunchClick(object sender, RoutedEventArgs e)
+        {
+            LaunchPreview();
         }
 
         private void ReleaseProfileClick(object sender, RoutedEventArgs e)
@@ -369,6 +378,11 @@ namespace MC_Buttery_Launcher
             RefreshProfiles();
         }
 
+        private void ReleaseProfileList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            LaunchRelease();
+        }
+
         private void ReleaseProfileList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ReleaseProfileList.SelectedIndex < 0) ReleaseProfiles.FindIndex(p => p.uuid == Settings.selectedRelease);
@@ -377,6 +391,11 @@ namespace MC_Buttery_Launcher
         private void PreviewProfileList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (PreviewProfileList.SelectedIndex < 0) PreviewProfiles.FindIndex(p => p.uuid == Settings.selectedPreview);
+        }
+
+        private void PreviewProfileList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            LaunchPreview();
         }
 
         private void SettingsUI()
